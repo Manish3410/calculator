@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minimal Calculator</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #f0f2f5;
+      }
+
+      .calculator {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      input {
+        width: 100%;
+        border: none;
+        padding: 20px;
+        margin-bottom: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        font-size: 32px;
+        text-align: right;
+        color: #333;
+        outline: none;
+      }
+
+      input::placeholder {
+        color: #999;
+      }
+
+      .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+
+      button {
+        border: none;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #ffffff;
+        color: #333;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      button:hover {
+        background: #f0f0f0;
+      }
+
+      button:active {
+        transform: scale(0.95);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .operator {
+        color: #0066ff;
+        background: #e6f0ff;
+      }
+
+      .equalBtn {
+        background: #0066ff;
+        color: white;
+      }
+
+      .equalBtn:hover {
+        background: #0052cc;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calculator">
+      <input type="text" placeholder="0" id="inputBox" />
+      <div class="buttons">
+        <button class="operator">AC</button>
+        <button class="operator">DEL</button>
+        <button class="operator">%</button>
+        <button class="operator">/</button>
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button class="operator">*</button>
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button class="operator">-</button>
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button class="operator">+</button>
+        <button>00</button>
+        <button>0</button>
+        <button>.</button>
+        <button class="equalBtn">=</button>
+      </div>
+    </div>
+
+    <script>
+      let input = document.getElementById("inputBox");
+      let buttons = document.querySelectorAll("button");
+      let string = "";
+
+      // Click event handler
+      buttons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+          handleInput(e.target.innerHTML);
+        });
+      });
+
+      // Keyboard event handler
+      document.addEventListener("keydown", (e) => {
+        const key = e.key;
+        const validKeys = "0123456789/*-+=.%";
+
+        if (validKeys.includes(key)) {
+          handleInput(key);
+          animateButton(key);
+        } else if (key === "Enter") {
+          handleInput("=");
+          animateButton("=");
+        } else if (key === "Backspace") {
+          handleInput("DEL");
+          animateButton("DEL");
+        } else if (key === "Escape") {
+          handleInput("AC");
+          animateButton("AC");
+        }
+      });
+
+      function handleInput(value) {
+        if (value === "=") {
+          try {
+            string = eval(string);
+            input.value = string;
+          } catch {
+            input.value = "Error";
+            string = "";
+          }
+        } else if (value === "AC") {
+          string = "";
+          input.value = string;
+        } else if (value === "DEL") {
+          string = string.slice(0, -1);
+          input.value = string;
+        } else {
+          string += value;
+          input.value = string;
+        }
+      }
+
+      function animateButton(value) {
+        let button;
+        if (value === "Enter") value = "=";
+
+        button = Array.from(buttons).find((btn) => btn.innerHTML === value);
+        if (button) {
+          button.classList.add("active");
+          setTimeout(() => button.classList.remove("active"), 100);
+        }
+      }
+
+      // Add active class style
+      const style = document.createElement("style");
+      style.textContent = `
+            button.active {
+                transform: scale(0.95);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            }
+        `;
+      document.head.appendChild(style);
+    </script>
+  </body>
+</html>
